@@ -39,6 +39,11 @@ $.fn.stick_in_parent = (opts={}) ->
     else
       el.outerWidth true
 
+  get_offset_top = ->
+    if typeof offset_top == 'function'
+      return offset_top.apply(@$el)
+    offset_top
+
   for elm in @
     ((elm, padding_bottom, parent_top, parent_height, top, height, el_float, detached) ->
       return if elm.data "sticky_kit"
@@ -87,7 +92,7 @@ $.fn.stick_in_parent = (opts={}) ->
 
           restore = true
 
-        top = elm.offset().top - (parseInt(elm.css("margin-top"), 10) or 0) - offset_top
+        top = elm.offset().top - (parseInt(elm.css("margin-top"), 10) or 0) - get_offset_top()
 
         height = elm.outerHeight true
 
@@ -107,12 +112,12 @@ $.fn.stick_in_parent = (opts={}) ->
       return if height == parent_height
 
       last_pos = undefined
-      offset = offset_top
 
       recalc_counter = recalc_every
 
       tick = ->
         return if detached
+        offset = get_offset_top()
         recalced = false
 
         if recalc_counter?
@@ -147,7 +152,7 @@ $.fn.stick_in_parent = (opts={}) ->
           # unfixing
           if scroll < top
             fixed = false
-            offset = offset_top
+            offset = get_offset_top()
 
             unless manual_spacer?
               if el_float == "left" || el_float == "right"
@@ -165,11 +170,11 @@ $.fn.stick_in_parent = (opts={}) ->
           # updated offset
           if inner_scrolling
             win_height = win.height()
-            if height + offset_top > win_height # bigger than viewport
+            if height + get_offset_top() > win_height # bigger than viewport
               unless bottomed
                 offset -= delta
                 offset = Math.max win_height - height, offset
-                offset = Math.min offset_top, offset
+                offset = Math.min get_offset_top(), offset
 
                 if fixed
                   elm.css {
@@ -261,5 +266,3 @@ $.fn.stick_in_parent = (opts={}) ->
 
     ) $ elm
   @
-
-
