@@ -80,7 +80,6 @@ $.fn.stick_in_parent = (opts={}) ->
           bottomed = false
 
           unless manual_spacer?
-            elm.insertAfter(spacer)
             spacer.detach()
 
           elm.css({
