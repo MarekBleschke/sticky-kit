@@ -105,7 +105,7 @@ $.fn.stick_in_parent = (opts={}) ->
         }) if spacer
 
         if restore
-          tick()
+          tick(null, restore)
 
       recalc()
       return if height == parent_height
@@ -114,7 +114,7 @@ $.fn.stick_in_parent = (opts={}) ->
 
       recalc_counter = recalc_every
 
-      tick = ->
+      tick = (ev, restore)->
         return if detached
         offset = get_offset_top()
         recalced = false
@@ -203,6 +203,9 @@ $.fn.stick_in_parent = (opts={}) ->
                 spacer.append elm
 
             elm.trigger("sticky_kit:stick")
+          else if restore
+            # elm was detached in recalc and stayed this way.
+            elm.trigger("sticky_kit:unstick");
 
         # this is down here because we can fix and bottom in same step when
         # scrolling huge
